@@ -9,66 +9,57 @@
 
 // Maximum number of histories will be kept
 
-const MaxHistory = 10;
+const MaxHistoryLength = 10;
+
+
+class History {
+    
+    #prompts = []
+    
+    
+    push ( prompt ){
+        
+        const { last } = this;
+        
+        if(prompt === last)
+            return
+            
+        this.#prompts.push(last);
+        
+        this.#checkCapacity();
+    }
+    
+    pop (){
+        return this.#prompts.shift()
+    }
+    
+    
+    #checkCapacity (){
+        
+        const { items } = this;
+        
+        if(items > MaxHistoryLength)
+            this.#prompts.pop();
+    }
+    
+    
+    get items (){
+        return this.#prompts.length
+    }
+    
+    get last (){
+        return this.#prompts[0]
+    }
+}
 
 
 // History of positive prompt
 
-let historyBox = (() => {
-    
-    let _historyBox = [];
-
-    return {
-        
-        push : ( prompt ) => {
-            
-            if(prompt == _historyBox[_historyBox.length - 1])
-                return
-            
-            _historyBox.push(prompt);
-            
-            if(MaxHistory < _historyBox.length)
-                _historyBox.shift();
-        },
-        
-        pop : () => {
-            
-            let prePrompt = _historyBox.pop();
-            
-            return prePrompt;
-        },
-    }
-    
-})();
-
+let historyBox = new History;
 
 // History of negative prompt
 
-let nhistoryBox = (() => {
-
-    let _historyBox = [];
-
-    return {
-        
-        push : (prompt) => {
-            
-            if(prompt == _historyBox[_historyBox.length - 1])
-                return;
-            
-            _historyBox.push(prompt);
-            
-            if(MaxHistory < _historyBox.length)
-                _historyBox.shift();
-        },
-        
-        pop : () => {
-            
-            let prePrompt = _historyBox.pop();
-            
-            return prePrompt;
-        }
-    }
-})();
+let nhistoryBox = new History;
 
 
 function round (value){
